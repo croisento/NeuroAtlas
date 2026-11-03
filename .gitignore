@@ -3,4 +3,6 @@ __pycache__/
 .DS_Store
 .posit/
 validation_server.log
+/results/
+/inputs/
 

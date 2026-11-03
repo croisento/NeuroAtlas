@@ -44,6 +44,11 @@ distinguish flagged, not flagged and not assessed samples.
 | `app.py` | Shiny for Python application |
 | `www/style.css` | Website styles |
 | `requirements.txt` | Python package dependencies |
+| `analysis/` | Dataset import, QC, integration, annotation, statistics and figure code |
+| `analysis/README.md` | Processing order, inputs, outputs and analysis commands |
+| `analysis/parameters.csv` | Recorded parameters and source locations |
+| `analysis/figure_panel_map.csv` | Manuscript panels and their generating scripts |
+| `analysis/requirements.txt` | Analysis package versions, separate from the website environment |
 
 Expression matrices store log1p-normalized counts per 10,000, multiplied by
 1,000 and rounded to integers. Divide stored values by the expression scale

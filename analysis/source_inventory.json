@@ -1,0 +1,275 @@
+{
+  "dataset_readers": [
+    {
+      "dataset": "GSE133028",
+      "reader": "analysis/inputs/GSE133028.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse133028",
+      "original_lines": "380-432"
+    },
+    {
+      "dataset": "GSE134577",
+      "reader": "analysis/inputs/GSE134577.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse134577",
+      "original_lines": "439-484"
+    },
+    {
+      "dataset": "GSE138266",
+      "reader": "analysis/inputs/GSE138266.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse138266",
+      "original_lines": "491-601"
+    },
+    {
+      "dataset": "GSE141578",
+      "reader": "analysis/inputs/GSE141578.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse141578",
+      "original_lines": "666-703"
+    },
+    {
+      "dataset": "GSE163005",
+      "reader": "analysis/inputs/GSE163005.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse163005",
+      "original_lines": "710-776"
+    },
+    {
+      "dataset": "GSE186802",
+      "reader": "analysis/inputs/GSE186802.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse186802",
+      "original_lines": "783-830"
+    },
+    {
+      "dataset": "GSE194078",
+      "reader": "analysis/inputs/GSE194078.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse194078",
+      "original_lines": "837-889"
+    },
+    {
+      "dataset": "GSE200164",
+      "reader": "analysis/inputs/GSE200164.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse200164",
+      "original_lines": "896-946"
+    },
+    {
+      "dataset": "GSE243905",
+      "reader": "analysis/inputs/GSE243905.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse243905",
+      "original_lines": "953-1003"
+    },
+    {
+      "dataset": "GSE244499",
+      "reader": "analysis/inputs/GSE244499.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse244499",
+      "original_lines": "1010-1058"
+    },
+    {
+      "dataset": "GSE247134",
+      "reader": "analysis/inputs/GSE247134.py",
+      "source": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "source_function": "process_gse247134",
+      "original_lines": "1065-1128"
+    }
+  ],
+  "historical_sources": [
+    {
+      "file": "analysis/historical/01_early_QC_and_annotation.ipynb",
+      "original_file": "NEU_anno.ipynb",
+      "code_sha256": "052632d516468220c2003c8e0a88f5ace316485a139e2a43a737e624e631101e",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/02_global_reclustering.ipynb",
+      "original_file": "NEU-0126-2.ipynb",
+      "code_sha256": "0053200eb67912968ed869ae3cbb09ee347f4baf768b64d91c7d8757a6325b88",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/03_B_lineage_annotation.ipynb",
+      "original_file": "NEU_B.ipynb",
+      "code_sha256": "2c63be0ad92e7742532cbd5a144bc2704969fad9e47f6f97a2101b625a2bdcae",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/04_T_lineage_annotation.ipynb",
+      "original_file": "NEU_T.ipynb",
+      "code_sha256": "098b2f2e74403bd8b9cd06e28971597369da90bf7340808250c5460f6acc3087",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/05_NK_lineage_annotation.ipynb",
+      "original_file": "NEU_NK.ipynb",
+      "code_sha256": "6431276069d0a6b8ee18056ad11514cfe9796ff41360763245df36d5643b7e8b",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/06_Myeloid_lineage_annotation.ipynb",
+      "original_file": "NEU_Myeloid.ipynb",
+      "code_sha256": "37ba14cfbf1894a6bc4bead38fa6a828fd95d334548cd473aeac17de45831add",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/07_annotation_transfer.ipynb",
+      "original_file": "cell_type_integration.ipynb",
+      "code_sha256": "d545fad5a369b67aa162b91354195bfe2e9c5a551cb3ba58b7c054e4478e09d9",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/08_shared_counts_and_cell_matching.ipynb",
+      "original_file": "adata_integration.ipynb",
+      "code_sha256": "2477eaa533b0f870970e556dfee8c56c4a8d37277897998c92fd496577dd2875",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/historical/09_logcounts_and_label_names.ipynb",
+      "original_file": "rplot0618.ipynb",
+      "code_sha256": "dea54f1ef6866ba9f4716fa5a107d3e3ac6b811396721a481fcc774d27b2a53c",
+      "outputs_removed": true
+    },
+    {
+      "file": "analysis/source_scripts/00_prepare_all_raw_count_h5ad_datasets.py",
+      "original_file": "00_prepare_all_raw_count_h5ad_datasets.py",
+      "sha256": "7edd5aba27000b8574f6920f742d2f52c12ffae4df6f3c638cb44a009c7a1e63",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/01_load_merge_and_plot_gene_intersections.py",
+      "original_file": "01_load_merge_and_plot_gene_intersections.py",
+      "sha256": "8332139917f594888afdca02e9d3c01af4020572900de4cdf0bb02e04610fe78",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/02_preprocessing_Harmony_integration_clustering.py",
+      "original_file": "02_preprocessing_Harmony_integration_clustering.py",
+      "sha256": "ba04bb36f8e47b9953ce67aaeecc5aa860e4de6c2384a94a3371e23025493189",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/03_lineage_specific_Harmony_reclustering_and_UMAP.py",
+      "original_file": "03_lineage_specific_Harmony_reclustering_and_UMAP.py",
+      "sha256": "a9c48cc31a1642e80ba55ece2d5e431a498e73a6faf10a1f849d94120535b226",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/04_figure2.py",
+      "original_file": "04_figure2.py",
+      "sha256": "3d4434a1d1b01c26c2f78726807b4de85da362615185328a4e194819fc3dc49e",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/08_SupplementaryFigure1AB.py",
+      "original_file": "08_SupplementaryFigure1AB.py",
+      "sha256": "eef6e986b71b255446f86626d2208262ebf4f32d29ec07c14abaf75f65ebf259",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/07_Figure5_AB_and_Supplement_Figure1D.py",
+      "original_file": "07_Figure5_AB_and_Supplement_Figure1D.py",
+      "sha256": "a43f02611a29f3bcaefe5b9e2296fa67bf0ef2fd2d84afa2b3f05b28a6940c0a",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/05_Figure3_SupplementaryFigure1C_SupplementaryFigure2_SupplementaryFigure3_CSF_composition_analysis.py",
+      "original_file": "05_Figure3_SupplementaryFigure1C_SupplementaryFigure2_SupplementaryFigure3_CSF_composition_analysis.py",
+      "sha256": "f4e5a48a82a87288dccdb326b182fac6d752a21cf2aeec66b2c9dc4b63fa70e7",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/36_update_stackedbar_colors_and_metadata_umaps.py",
+      "original_file": "36_update_stackedbar_colors_and_metadata_umaps.py",
+      "sha256": "84dd1d82052b9a540bd6414bbfb6a63320157678efa646a2f673189360b76567",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/59_plot_doublet_UMAP_pair_and_sample_fractions.py",
+      "original_file": "59_plot_doublet_UMAP_pair_and_sample_fractions.py",
+      "sha256": "ebc76a333e9745188fc69d3ac2fb6b40a8dad0225ed7c08e3c59eef4825e9d3f",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/09_SupplementaryFigure1EF_CSF_PBMC_sample_composition.py",
+      "original_file": "09_SupplementaryFigure1EF_CSF_PBMC_sample_composition.py",
+      "sha256": "69783ee869c2496a51729e4ec384ad64a509b3375952ec53adc29f24e9ff19ee",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/32_regenerate_figure2_lineage_umaps_matched_style.py",
+      "original_file": "32_regenerate_figure2_lineage_umaps_matched_style.py",
+      "sha256": "716b10f896f950b25209f4ef7165349fb21a18b0987b2ca63e5c2b7fb7cfbdcd",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/33_sync_GSM_UMAP_colors_and_plot_PBMC_QC_violin.py",
+      "original_file": "33_sync_GSM_UMAP_colors_and_plot_PBMC_QC_violin.py",
+      "sha256": "8e520b24528ef2680df3d378d9185d04adaabf1e32eeed0815d0edbfff30c115",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/37_plot_cell_type_proportion_faceted_by_tissue.py",
+      "original_file": "37_plot_cell_type_proportion_faceted_by_tissue.py",
+      "sha256": "9935667917f2523dc11781e2b837ba132884e6c6c477a99cb630b73e31a9e4bb",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/49_identify_doublets_final_atlas_no_removal.py",
+      "original_file": "49_identify_doublets_final_atlas_no_removal.py",
+      "sha256": "38661f7ee5eef0ec402ee52b10da659123835544ec47dfdc829d9c93b989188c",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/61_paired_CSF_PBMC_composition_analysis.py",
+      "original_file": "61_paired_CSF_PBMC_composition_analysis.py",
+      "sha256": "e8171d85533e5987f2eab5e5d8087797ade4618c04123f9875c15dd24fb34bd0",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/65_paired_CSF_PBMC_40pairs_exclude_duplicate.py",
+      "original_file": "65_paired_CSF_PBMC_40pairs_exclude_duplicate.py",
+      "sha256": "cdaf299bd40e50a93ca5f5e8f390e2091e5ceade12255b7ff3de14955cc5671c",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/63_plot_doublet_UMAP_CSF_PBMC_panels.py",
+      "original_file": "63_plot_doublet_UMAP_CSF_PBMC_panels.py",
+      "sha256": "05885bb2ff0cf05e9fe96f80191d5b4d555bcaafa39e83287f60cca70d82b341",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/67_marker_top50_Wilcoxon_filtered.py",
+      "original_file": "67_marker_top50_Wilcoxon_filtered.py",
+      "sha256": "e0c1c4ab60d9c474830aaa5651615037ce4b9063dcbc26ea7e2b9ba1de3bcf57",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/69_build_manuscript_cloud_bundle.py",
+      "original_file": "69_build_manuscript_cloud_bundle.py",
+      "sha256": "e54982f4290acef9f6a1cbfeea60b879ff699e0d76a3a2f848182268d1ecfc2d",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/00_01_uniform_QC_merge/14_filter_samples_below_400_except_cart.py",
+      "original_file": "00_01_uniform_QC_merge/14_filter_samples_below_400_except_cart.py",
+      "sha256": "22c646f638691b7b01b28cbd7da2c1126b83789aed8406f2cdd524b2cdff23ca",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/00_01_uniform_QC_merge/11_standardize_age_gender_tissue.py",
+      "original_file": "00_01_uniform_QC_merge/11_standardize_age_gender_tissue.py",
+      "sha256": "2dddebae3a5e060870f0559d5aeb783d28ae1f2061cba5a1a6bb0b938639beb2",
+      "role": "historical source; local paths retained"
+    },
+    {
+      "file": "analysis/source_scripts/00_01_uniform_QC_merge/20_correct_GSE134577_GSE141578_metadata.py",
+      "original_file": "00_01_uniform_QC_merge/20_correct_GSE134577_GSE141578_metadata.py",
+      "sha256": "fe7b67665bfc4fd94f1b2f560015160706ef028f9be336e60ba7a3878a21b2af",
+      "role": "historical source; local paths retained"
+    }
+  ]
+}

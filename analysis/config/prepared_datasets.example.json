@@ -1,0 +1,13 @@
+{
+  "GSE133028": "inputs/raw/GSE133028_raw_count.h5ad",
+  "GSE134577": "inputs/raw/GSE134577_raw_count.h5ad",
+  "GSE138266": "inputs/raw/GSE138266_raw_count_rmlowquality.h5ad",
+  "GSE141578": "inputs/raw/GSE141578_raw_count.h5ad",
+  "GSE163005": "inputs/raw/GSE163005_raw_count.h5ad",
+  "GSE186802": "inputs/raw/GSE186802_raw_count_subset.h5ad",
+  "GSE194078": "inputs/raw/GSE194078_raw_count.h5ad",
+  "GSE200164": "inputs/raw/GSE200164_raw_count.h5ad",
+  "GSE243905": "inputs/raw/GSE243905_raw_count.h5ad",
+  "GSE244499": "inputs/raw/GSE244499_raw_count.h5ad",
+  "GSE247134": "inputs/raw/GSE247134_raw_count.h5ad"
+}

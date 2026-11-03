@@ -1,0 +1,5 @@
+disease,n_samples,n_outliers,outlier_samples
+MS,20,3,GSM4104135;GSM5264662;GSM5827396
+Ab-mediated IDD,6,0,
+IIH,5,0,
+Younger control,5,1,GSM7798077

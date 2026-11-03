@@ -1,0 +1,168 @@
+{
+  "cell_order": [
+    "Naive B",
+    "Memory B",
+    "Plasma cell",
+    "CD4 Naive",
+    "CD8 Naive",
+    "CD4 Memory",
+    "CD8 Memory",
+    "Treg",
+    "CD4 CTL",
+    "CD8 CTL",
+    "MAIT",
+    "γδT",
+    "NKT",
+    "NK bright",
+    "Transit. NK",
+    "NK dim",
+    "ILC2",
+    "cMonocytes",
+    "ncMonocytes",
+    "mdMac",
+    "trMac",
+    "infMac",
+    "cDC2",
+    "pDC",
+    "ASDC"
+  ],
+  "cell_colors": {
+    "Naive B": "#C96F6F",
+    "Transitional B": "#D89A84",
+    "Memory B": "#B85C68",
+    "Plasma cell": "#B77AB5",
+    "CD4 Naive": "#7DA7CF",
+    "CD4 Memory": "#AEC9E4",
+    "CD4 CTL": "#3E7C9D",
+    "CD8 Naive": "#4F9A78",
+    "MAIT": "#75B38A",
+    "CD8 Memory": "#98C970",
+    "CD8 CTL": "#C3D894",
+    "γδT": "#A6B85A",
+    "NKT": "#BFB552",
+    "Treg": "#3F6BA7",
+    "Transit. NK": "#A995C1",
+    "NK dim": "#C99235",
+    "NK bright": "#D7BE66",
+    "ILC2": "#DDD36A",
+    "cMonocytes": "#C97891",
+    "ncMonocytes": "#9E5F73",
+    "trMac": "#D6A196",
+    "infMac": "#C17DB4",
+    "mdMac": "#9568B1",
+    "cDC2": "#B46AB0",
+    "pDC": "#7F8CC1",
+    "ASDC": "#B79BD0"
+  },
+  "canonical_markers": {
+    "B/Plasma": [
+      "CD19",
+      "MS4A1",
+      "TCL1A",
+      "CD27",
+      "CD38",
+      "JCHAIN"
+    ],
+    "T_Naive": [
+      "CD3E",
+      "CD4",
+      "CCR7",
+      "TCF7",
+      "IL2RA"
+    ],
+    "Cytotoxic": [
+      "CD8A",
+      "GZMK",
+      "GZMB",
+      "PRF1",
+      "GNLY",
+      "NKG7",
+      "SLC4A10"
+    ],
+    "MAIT/γδT": [
+      "KLRB1",
+      "TRDC",
+      "TRGC1",
+      "IL7R"
+    ],
+    "NK/ILC": [
+      "KIT",
+      "GATA3",
+      "XCL1",
+      "FCGR3A",
+      "CX3CR1"
+    ],
+    "Monocytes": [
+      "CD14",
+      "CCR2",
+      "FCGR3B",
+      "FCN1",
+      "VCAN"
+    ],
+    "Macrophages": [
+      "S100A12",
+      "C1QA",
+      "C1QC",
+      "APOE",
+      "CD163",
+      "F13A1",
+      "LYZ"
+    ],
+    "InfMac": [
+      "CTSS",
+      "CD44",
+      "GBP1",
+      "ISG15",
+      "IFITM1"
+    ],
+    "mdMac": [
+      "FCN1",
+      "VCAN",
+      "S100A8",
+      "S100A9",
+      "CD36"
+    ],
+    "DCs": [
+      "CD1C",
+      "CLEC10A",
+      "FCER1A",
+      "HLA-DRA",
+      "AXL",
+      "SIGLEC6"
+    ]
+  },
+  "disease_colors": {
+    "Younger control": "#1f77b4",
+    "Older control": "#aec7e8",
+    "controls without CNS inflammation (unspecific)": "#ff7f0e",
+    "MCI/AD": "#ffbb78",
+    "PD": "#2ca02c",
+    "IIH": "#98df8a",
+    "MS": "#d62728",
+    "Ab-mediated IDD": "#ff9896",
+    "VE": "#9467bd",
+    "Neuro-COVID": "#8c564b",
+    "CAR-T-DIPG": "#c49c94",
+    "NT1": "#e377c2",
+    "CIS": "#f7b6d2",
+    "RIS": "#7f7f7f",
+    "DLB": "#c7c7c7",
+    "PHN": "#bcbd22",
+    "Uveitis": "#dbdb8d",
+    "NMO": "#17becf",
+    "NT2": "#9edae5"
+  },
+  "dataset_colors": {
+    "GSE133028": "#1f77b4",
+    "GSE134577": "#ff7f0e",
+    "GSE138266": "#2ca02c",
+    "GSE141578": "#d62728",
+    "GSE163005": "#9467bd",
+    "GSE186802": "#8c564b",
+    "GSE194078": "#e377c2",
+    "GSE200164": "#7f7f7f",
+    "GSE243905": "#bcbd22",
+    "GSE244499": "#17becf",
+    "GSE247134": "#9edae5"
+  }
+}
