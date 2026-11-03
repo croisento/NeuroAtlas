@@ -1,0 +1,9 @@
+{
+  "data_contracts": "passed",
+  "composition_and_zero_filled_medians": "passed",
+  "paired_all25_and_composition_and_PCA_plot_builders": "passed",
+  "marker_and_expression_contracts": "passed",
+  "pairing_and_PCA_flags": "passed",
+  "browser_interaction_test": "not run; Playwright is not installed",
+  "Shiny_HTTP_startup": "passed"
+}

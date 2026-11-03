@@ -1,0 +1,24 @@
+{
+  "master": "adata_final_Disease_corrected_min400_except_CART_scrublet_identified.h5ad",
+  "n_cells": 573569,
+  "categorical_fields_match_master_in_cell_order": true,
+  "umap_exactly_matches_master": true,
+  "changes": [
+    {
+      "field": "Disease",
+      "old_label": "Unknown",
+      "new_label": "controls without CNS inflammation (unspecific)",
+      "cells_changed": 17422
+    },
+    {
+      "field": "Disease1",
+      "old_label": "Unknown",
+      "new_label": "controls without CNS inflammation (unspecific)",
+      "cells_changed": 17422
+    }
+  ],
+  "expression_and_numeric_qc_arrays_modified": false,
+  "atlas_metadata_sha256": "e8b2fbdc6b71dfb8f04cd415f175557859c368d531fc27e7a75426aa87b47011",
+  "historical_label_only_check": true,
+  "superseded_by": "manuscript_bundle_validation.json"
+}

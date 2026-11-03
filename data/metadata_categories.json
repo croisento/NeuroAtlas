@@ -304,10 +304,10 @@
     "PD",
     "PHN",
     "RIS",
-    "Unknown",
     "Uveitis",
     "VE",
-    "Younger control"
+    "Younger control",
+    "controls without CNS inflammation (unspecific)"
   ],
   "Disease1": [
     "Antibody-mediated Inflammatory Demyelinating Disease",
@@ -325,10 +325,10 @@
     "Parkinson Disease",
     "Postherpetic Neuralgia",
     "Radiologically Isolated Syndrome",
-    "Unknown",
     "Uveitis",
     "Viral Encephalitis",
-    "Younger Control (age < 60 years)"
+    "Younger Control (age < 60 years)",
+    "controls without CNS inflammation (unspecific)"
   ],
   "cell_type": [
     "B cell",
@@ -363,5 +363,14 @@
     "pDC",
     "trMac",
     "γδT"
+  ],
+  "predicted_doublet": [
+    "False",
+    "True"
+  ],
+  "PCA_compositional_outlier": [
+    "Flagged",
+    "Not assessed",
+    "Not flagged"
   ]
 }

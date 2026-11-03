@@ -1,0 +1,17 @@
+{
+  "n_cells": 573569,
+  "n_samples": 205,
+  "n_pairs": 40,
+  "n_unique_marker_genes": 668,
+  "n_predicted_doublets": 6157,
+  "n_PCA_flagged_samples": 13,
+  "n_PCA_assessed_samples": 177,
+  "n_clinical_rows_matched": 205,
+  "n_clinical_manifestation_not_reported": 0,
+  "cell_order_and_umap_verified": true,
+  "numeric_QC_arrays_preserved": true,
+  "marker_tables": {
+    "cell_type": 250,
+    "cell_subtype_short": 1250
+  }
+}

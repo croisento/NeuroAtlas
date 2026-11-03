@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from scipy import sparse
 from shiny import App, reactive, render, ui
 from shinywidgets import output_widget, render_plotly
@@ -22,7 +23,14 @@ CATEGORIES = json.loads(
     (DATA / "metadata_categories.json").read_text(encoding="utf-8")
 )
 ARRAYS = np.load(DATA / "atlas_metadata.npz")
-MARKERS = pd.read_csv(DATA / "cell_type_top50_marker_catalog.csv")
+MARKER_TABLES = {
+    key: pd.read_csv(DATA / f"{key}_top50_marker_catalog.csv")
+    for key in ("cell_type", "cell_subtype_short")
+}
+SAMPLE_METADATA = pd.read_csv(DATA / "sample_metadata.csv", keep_default_na=False)
+PAIRS = pd.read_csv(DATA / "donor_matched_pairs.csv")
+PAIRED_PROPORTIONS = pd.read_csv(DATA / "paired_proportions.csv")
+PAIRED_STATISTICS = pd.read_csv(DATA / "paired_statistics.csv")
 
 obs = pd.DataFrame(
     {
@@ -51,6 +59,7 @@ QC_FIELDS = [
     "pct_counts_mt",
     "pct_counts_rb",
 ]
+CONTINUOUS_FIELDS = QC_FIELDS + ["age_numeric", "doublet_score"]
 SUBTYPE_ORDER = [
     "CD4 Naive", "CD8 Naive", "CD4 Memory", "CD8 Memory", "Treg",
     "CD4 CTL", "CD8 CTL", "MAIT", "γδT", "NKT",
@@ -82,7 +91,8 @@ SUBTYPE_COLORS = dict(
 )
 DISEASE_COLORS = {
     "Younger control": "#1f77b4", "Older control": "#aec7e8",
-    "Unknown": "#ff7f0e", "MCI/AD": "#ffbb78", "PD": "#2ca02c",
+    "controls without CNS inflammation (unspecific)": "#ff7f0e",
+    "MCI/AD": "#ffbb78", "PD": "#2ca02c",
     "IIH": "#98df8a", "MS": "#d62728", "Ab-mediated IDD": "#ff9896",
     "VE": "#9467bd", "Neuro-COVID": "#8c564b", "CAR-T-DIPG": "#c49c94",
     "NT1": "#e377c2", "CIS": "#f7b6d2", "RIS": "#7f7f7f",
@@ -97,8 +107,13 @@ PALETTES = {
         "pDC": "#7F8CC1",
     },
     "Disease": DISEASE_COLORS,
+    "Disease1": {"controls without CNS inflammation (unspecific)": "#ff7f0e"},
     "tissue": {"CSF": "#596FA8", "PBMC": "#4F8751"},
     "gender": {"Female": "#D46A92", "Male": "#4C78A8", "Unknown": "#8A8A8A"},
+    "predicted_doublet": {"False": "#B7BDC5", "True": "#D1495B"},
+    "PCA_compositional_outlier": {
+        "Flagged": "#D1495B", "Not flagged": "#4C78A8", "Not assessed": "#B7BDC5"
+    },
 }
 fallback = px.colors.qualitative.Safe + px.colors.qualitative.Set3
 for field in ["cell_subtype_short", "cell_type", "Disease", "Disease1", "tissue", "GSE", "GSM", "gender"]:
@@ -193,10 +208,10 @@ def box_statistics(values: np.ndarray) -> tuple[float, float, float, float, floa
     return float(q1), float(median), float(q3), lower, upper
 
 
-def composition_summary(indices: np.ndarray, group: str) -> pd.DataFrame:
-    """Return per-group normalized medians of sample-level subtype fractions."""
+def composition_summary(indices: np.ndarray, group: str, mode: str = "pooled") -> pd.DataFrame:
+    """Pooled proportions or zero-completed sample-level medians."""
     frame_columns = list(
-        dict.fromkeys(["GSE", "GSM", group, "cell_subtype_short"])
+        dict.fromkeys(["GSE", "GSM", group, "cell_subtype_short"] + (["tissue"] if mode == "pooled" else []))
     )
     frame = obs.iloc[indices][frame_columns].copy()
     counts = (
@@ -205,36 +220,32 @@ def composition_summary(indices: np.ndarray, group: str) -> pd.DataFrame:
         .rename("Cells")
         .reset_index()
     )
+    if mode == "pooled":
+        grouping = list(dict.fromkeys(["tissue", group]))
+        pooled = counts.groupby(grouping + ["cell_subtype_short"], observed=True)["Cells"].sum().reset_index()
+        pooled["Proportion"] = pooled["Cells"] / pooled.groupby(grouping, observed=True)["Cells"].transform("sum")
+        return pooled
     totals = counts.groupby(["GSE", "GSM"], observed=True)["Cells"].transform(
         "sum"
     )
     counts["Proportion"] = counts["Cells"] / totals
-    summary = (
-        counts.groupby([group, "cell_subtype_short"], observed=True)["Proportion"]
-        .median()
-        .reset_index()
-    )
-    median_totals = summary.groupby(group, observed=True)["Proportion"].transform(
-        "sum"
-    )
-    summary["Proportion"] = np.divide(
-        summary["Proportion"],
-        median_totals,
-        out=np.zeros(len(summary), dtype=np.float64),
-        where=median_totals.to_numpy() > 0,
-    )
-    return summary
+    identifiers = list(dict.fromkeys(["GSE", "GSM", group]))
+    per_sample = counts.pivot_table(index=identifiers, columns="cell_subtype_short", values="Proportion", observed=True, fill_value=0)
+    per_sample = per_sample.reindex(columns=SUBTYPE_ORDER, fill_value=0)
+    long = per_sample.reset_index().melt(id_vars=identifiers, value_vars=SUBTYPE_ORDER,
+                                        var_name="cell_subtype_short", value_name="Proportion")
+    return long.groupby([group, "cell_subtype_short"], observed=True)["Proportion"].median().reset_index()
 
 
 app_ui = ui.page_fillable(
     ui.include_css(ROOT / "www/style.css"),
     ui.tags.header(
         ui.tags.div(
-            ui.tags.h1("Human CSF-PBMC Single-Cell Atlas"),
-            ui.tags.p("Interactive view of the curated publication cohort"),
+            ui.tags.h1("neuroCSF-PBMC"),
+            ui.tags.p("A neurotoxicity atlas of cerebrospinal fluid and peripheral blood mononuclear cells in human diseases"),
             class_="brand",
         ),
-        ui.tags.div(ui.tags.span("573,569 curated cells", class_="status-label"), class_="header-status"),
+        ui.tags.div(ui.tags.span("573,569 cells · 161 CSF samples · 40 donor-matched pairs", class_="status-label"), class_="header-status"),
         class_="app-header",
     ),
     ui.layout_sidebar(
@@ -246,9 +257,11 @@ app_ui = ui.page_fillable(
             ui.input_selectize("gse", "GSE", choices("GSE"), multiple=True),
             ui.input_selectize("gender", "Gender", choices("gender"), multiple=True),
             ui.input_selectize("cell_type", "Cell type", choices("cell_type"), multiple=True),
+            ui.input_checkbox("exclude_doublets", "Exclude predicted doublets", False),
+            ui.input_checkbox("exclude_pca", "Exclude PCA-flagged samples", False),
             ui.input_action_button("reset", "Reset filters", class_="btn-outline-secondary reset-button"),
             ui.tags.hr(),
-            ui.tags.p("Disease and Disease1 are retained; the redundant lowercase disease field is excluded.", class_="sidebar-note"),
+            ui.tags.p("Predicted doublets and PCA compositional outliers are retained by default. PCA 'Not assessed' samples remain included when excluding flagged samples.", class_="sidebar-note"),
             width=300,
         ),
         ui.navset_tab(
@@ -268,6 +281,10 @@ app_ui = ui.page_fillable(
                                 "cell_type": "Cell type", "cell_subtype_short": "Cell subtype",
                                 "Disease": "Disease", "Disease1": "Disease1", "tissue": "Tissue",
                                 "GSE": "GSE", "gender": "Gender",
+                                "age_numeric": "Age (years)",
+                                "doublet_score": "Doublet score",
+                                "predicted_doublet": "Predicted doublet",
+                                "PCA_compositional_outlier": "PCA compositional outlier",
                                 "n_genes_by_counts": "Genes detected",
                                 "total_counts": "Total counts",
                                 "pct_counts_mt": "Mitochondrial counts (%)",
@@ -295,8 +312,26 @@ app_ui = ui.page_fillable(
             ui.nav_panel(
                 "Composition",
                 ui.card(
-                    ui.card_header(ui.input_select("composition_group", "Group by", {"tissue": "Tissue", "Disease": "Disease", "Disease1": "Disease1", "GSE": "GSE"}, selected="tissue")),
-                    output_widget("composition_plot"), full_screen=True, class_="plot-card",
+                    ui.card_header(
+                        ui.input_select("composition_group", "Group by", {"tissue": "Tissue", "Disease": "Disease", "Disease1": "Disease1", "GSE": "GSE"}, selected="Disease"),
+                        ui.input_radio_buttons("composition_mode", "Summary",
+                            {"pooled": "Pooled cell proportions (manuscript)", "median": "Median sample-level proportions"}, selected="pooled"),
+                    ),
+                    output_widget("composition_plot"),
+                    ui.tags.p("Pooled proportions use all filtered cells in each group. Median proportions include zero for absent subtypes and are not renormalized to sum to 100%.", class_="plot-hint"),
+                    full_screen=True, class_="plot-card",
+                ),
+            ),
+            ui.nav_panel(
+                "Paired comparison",
+                ui.card(
+                    ui.card_header(ui.input_selectize("paired_subtypes", "Cell subtype", SUBTYPE_ORDER,
+                        selected=["NK bright", "NK dim", "CD4 Memory"], multiple=True)),
+                    ui.tags.p("40 donor-matched CSF–PBMC pairs. This page uses the fixed manuscript cohort, independently of sidebar filters. Two-sided Wilcoxon signed-rank tests; BH correction across all 25 subtypes. Proportions use all retained cells per sample, including predicted doublets.", class_="plot-hint"),
+                    output_widget("paired_plot"),
+                    ui.output_data_frame("paired_stats_table"),
+                    ui.download_button("download_paired", "Download paired proportions"),
+                    full_screen=True,
                 ),
             ),
             ui.nav_panel(
@@ -363,7 +398,12 @@ app_ui = ui.page_fillable(
             ui.nav_panel(
                 "Marker catalog",
                 ui.card(
-                    ui.card_header(ui.input_select("marker_group", "Cell type", choices("cell_type"), selected=choices("cell_type")[0])),
+                    ui.card_header(
+                        ui.input_select("marker_annotation", "Annotation", {"cell_type": "Cell type", "cell_subtype_short": "Cell subtype"}),
+                        ui.input_select("marker_group", "Group", choices("cell_type"), selected=choices("cell_type")[0]),
+                        ui.download_button("download_markers", "Download marker catalog"),
+                    ),
+                    ui.tags.p("One versus rest, tie-corrected two-sided Wilcoxon rank-sum test; BH correction across 12,890 genes per comparison; expression in ≥25% of cells in either group, estimated log₂ fold change ≥0.25, adjusted P<0.05. Up to 50 positive markers ranked by statistic.", class_="plot-hint"),
                     ui.output_data_frame("marker_table"), full_screen=True, class_="table-card",
                 ),
             ),
@@ -371,24 +411,37 @@ app_ui = ui.page_fillable(
                 "Samples",
                 ui.card(
                     ui.card_header(ui.tags.div(ui.tags.h2("Filtered sample metadata"), ui.download_button("download_samples", "Download CSV", class_="btn-primary"), class_="table-heading")),
-                    ui.output_data_frame("sample_table"), full_screen=True, class_="table-card",
+                    ui.output_data_frame("sample_table"),
+                    ui.tags.p("Pair IDs, paired sample accessions and inclusion status identify the 40 analysis pairs. The duplicate PBMC GSM5264668 remains in the atlas but is excluded from paired analysis. Clinical manifestations are transcribed from the supplied Table 2; blank source entries are labelled 'Not reported'. PCA flags distinguish flagged, not flagged and not assessed samples.", class_="plot-hint"),
+                    full_screen=True, class_="table-card",
                 ),
             ),
             ui.nav_panel(
                 "About",
                 ui.card(
-                    ui.tags.h2("About this atlas"),
+                    ui.tags.h2("About neuroCSF-PBMC"),
+                    ui.tags.p("11 public GEO datasets; 161 CSF samples and 40 donor-matched CSF–PBMC pairs. Healthy or cognitively normal controls are separated into Younger control (<60 years) and Older control (≥60 years). IIH retains its clinical label. Controls without CNS inflammation (unspecific) remain distinct from healthy controls."),
                     ui.tags.p("This read-only application displays existing annotations and UMAP coordinates. It does not recompute PCA, Harmony, clustering, or UMAP."),
                     ui.tags.dl(
                         ui.tags.dt("Cells"), ui.tags.dd(f"{len(obs):,}"),
-                        ui.tags.dt("Expression"), ui.tags.dd("220 unique genes from the Top 50 DEGs of each major cell type; log1p counts per 10,000."),
+                        ui.tags.dt("Expression"), ui.tags.dd(f"{len(genes)} unique genes from the Top 50 markers of major cell types and fine subtypes; log1p counts per 10,000."),
                         ui.tags.dt("Metadata"), ui.tags.dd("GSM, GSE, tissue, gender, age, Disease, Disease1, cell type, cell subtype, and four cell-level QC metrics."),
-                    ), class_="about-card",
+                    ),
+                    ui.tags.p("6,157 predicted doublets and 13 PCA-flagged samples (9 CSF and 4 PBMC) are retained by default. PCA assessment was performed within tissue and disease groups with at least five samples; a distance z-score >1.5 in the first two PCs defined the flag."),
+                    ui.tags.p("UMAP displays at most 80,000 sampled cells for browser performance; counts and composition use all filtered cells. Marker expression is limited to the supplied marker union."),
+                    ui.tags.h3("Processing and reuse"),
+                    ui.tags.p("The atlas contains 12,890 shared genes. Raw counts were normalized to 10,000 counts per cell and log1p transformed for expression analysis; Harmony was applied to PCA embeddings. The browser retains existing coordinates and annotations. Four lineage groups are used for display, while pDC remains a separate major cell type."),
+                    ui.tags.p("Predicted doublets were identified sample-wise with an expected rate of 5%. PCA compositional-outlier flags describe sample composition, not individual-cell quality. Optional filters update atlas views and sample summaries; the Paired comparison page retains its fixed manuscript analysis cohort."),
+                    ui.tags.h3("Downloads and source records"),
+                    ui.download_button("download_all_samples", "All sample metadata and clinical manifestations"),
+                    ui.tags.p("Full expression objects and the manuscript citation will be linked here after repository DOI and publication details are finalized."),
+                    ui.tags.a("Source code on GitHub", href="https://github.com/croisento/csf-pbmc-neurotoxic-atlas", target="_blank"),
+                    class_="about-card",
                 ),
             ),
         ),
     ),
-    title="Human CSF-PBMC Single-Cell Atlas",
+    title="neuroCSF-PBMC",
 )
 
 
@@ -398,6 +451,8 @@ def server(input, output, session):
     def reset_filters():
         for name in ["tissue", "disease", "disease1", "gse", "gender", "cell_type"]:
             ui.update_selectize(name, selected=[])
+        ui.update_checkbox("exclude_doublets", value=False)
+        ui.update_checkbox("exclude_pca", value=False)
 
     @reactive.calc
     def filtered_indices() -> np.ndarray:
@@ -410,6 +465,10 @@ def server(input, output, session):
         for field, selected in selections.items():
             if selected:
                 mask &= obs[field].isin(selected).to_numpy()
+        if input.exclude_doublets():
+            mask &= obs.predicted_doublet.astype(str).ne("True").to_numpy()
+        if input.exclude_pca():
+            mask &= obs.PCA_compositional_outlier.astype(str).ne("Flagged").to_numpy()
         return np.flatnonzero(mask)
 
     @reactive.calc
@@ -443,7 +502,7 @@ def server(input, output, session):
         field = input.color_by()
         frame = obs.iloc[indices][["GSM", "GSE", "tissue", "Disease", "Disease1", "gender", "cell_subtype_short"]].copy()
         frame["UMAP1"], frame["UMAP2"] = xy[indices, 0], xy[indices, 1]
-        if field in QC_FIELDS:
+        if field in CONTINUOUS_FIELDS:
             frame["Color"] = obs.iloc[indices][field].to_numpy(dtype=np.float32)
             figure = px.scatter(
                 frame, x="UMAP1", y="UMAP2", color="Color",
@@ -463,7 +522,7 @@ def server(input, output, session):
                 render_mode="webgl",
             )
         figure.update_traces(marker={"size": 2.2, "opacity": 0.72})
-        if field not in QC_FIELDS:
+        if field not in CONTINUOUS_FIELDS:
             add_large_clickable_legend(figure, field, category_order(field))
         figure.update_layout(**layout(f"UMAP colored by {field}", field), dragmode="pan")
         figure.update_xaxes(visible=False); figure.update_yaxes(visible=False, scaleanchor="x")
@@ -487,19 +546,64 @@ def server(input, output, session):
     def composition_plot():
         indices = filtered_indices()
         group = input.composition_group()
-        summary = composition_summary(indices, group)
+        mode = input.composition_mode()
+        summary = composition_summary(indices, group, mode)
         figure = px.bar(
             summary, x=group, y="Proportion", color="cell_subtype_short",
             color_discrete_map=SUBTYPE_COLORS,
             category_orders={"cell_subtype_short": SUBTYPE_ORDER},
+            facet_col="tissue" if group != "tissue" and mode == "pooled" and "tissue" in summary.columns else None,
         )
-        figure.update_layout(**layout(f"Normalized median sample-level composition by {group}", "Cell subtype"), barmode="stack")
-        figure.update_yaxes(tickformat=".0%", title="Normalized median proportion", range=[0, 1])
+        title = "Pooled cell composition" if mode == "pooled" else "Median sample-level composition"
+        figure.update_layout(**layout(f"{title} by {group}", "Cell subtype"), barmode="stack")
+        figure.update_yaxes(tickformat=".0%", title="Cell proportion" if mode == "pooled" else "Median proportion")
+        if mode == "pooled": figure.update_yaxes(range=[0, 1])
         if group == "tissue":
             present = [value for value in choices("tissue") if value in set(summary[group].astype(str))]
             figure.update_traces(width=0.46)
             figure.update_xaxes(range=[-0.75, max(len(present) - 0.25, 0.75)])
         return figure
+
+    @output
+    @render_plotly
+    def paired_plot():
+        selected = list(input.paired_subtypes() or [])
+        if not selected:
+            return go.Figure().update_layout(**layout("Select one or more cell subtypes"))
+        cols = min(3, len(selected))
+        rows = int(np.ceil(len(selected) / cols))
+        figure = make_subplots(rows=rows, cols=cols, subplot_titles=selected)
+        seen = set()
+        for panel, subtype in enumerate(selected):
+            row, col = divmod(panel, cols)
+            data = PAIRED_PROPORTIONS.loc[PAIRED_PROPORTIONS.cell_subtype_short.eq(subtype)]
+            for pair in data.itertuples():
+                color = PALETTES["GSE"][pair.dataset]
+                figure.add_trace(go.Scatter(
+                    x=["CSF", "PBMC"], y=[pair.CSF_percent, pair.PBMC_percent],
+                    mode="lines+markers", name=pair.dataset, legendgroup=pair.dataset,
+                    showlegend=pair.dataset not in seen, line={"color":color,"width":1},
+                    marker={"color":color,"size":5}, opacity=.65,
+                    text=[f"{pair.pair_id}: {pair.CSF_GSM}",f"{pair.pair_id}: {pair.PBMC_GSM}"],
+                    hovertemplate="%{text}<br>%{x}: %{y:.3f}%<extra></extra>"), row=row+1,col=col+1)
+                seen.add(pair.dataset)
+            statistic = PAIRED_STATISTICS.loc[PAIRED_STATISTICS.cell_subtype_short.eq(subtype)].iloc[0]
+            figure.update_xaxes(title_text=f"BH-adjusted P = {statistic.p_adjusted_BH:.3g}",row=row+1,col=col+1)
+            figure.update_yaxes(title_text="Proportion (%)",rangemode="tozero",row=row+1,col=col+1)
+        figure.update_layout(**layout("Donor-matched CSF–PBMC comparisons", "Dataset"),height=max(420,rows*350))
+        return figure
+
+    @output
+    @render.data_frame
+    def paired_stats_table():
+        selected = list(input.paired_subtypes() or [])
+        return render.DataGrid(PAIRED_STATISTICS.loc[PAIRED_STATISTICS.cell_subtype_short.isin(selected)],height="250px")
+
+    @output
+    @render.download(filename="selected_subtypes_40_donor_matched_pairs.csv")
+    def download_paired():
+        selected = list(input.paired_subtypes() or [])
+        yield PAIRED_PROPORTIONS.loc[PAIRED_PROPORTIONS.cell_subtype_short.isin(selected)].to_csv(index=False).encode("utf-8-sig")
 
     @reactive.calc
     def violin_payload():
@@ -590,17 +694,26 @@ def server(input, output, session):
     @output
     @render.data_frame
     def marker_table():
-        table = MARKERS.loc[MARKERS["group"] == input.marker_group()].sort_values("rank")
+        markers = MARKER_TABLES[input.marker_annotation()]
+        table = markers.loc[markers["group"] == input.marker_group()].sort_values("rank")
         return render.DataGrid(table, filters=True, height="620px")
+
+    @reactive.effect
+    @reactive.event(input.marker_annotation)
+    def marker_groups():
+        field = input.marker_annotation()
+        ui.update_select("marker_group", choices=category_order(field), selected=category_order(field)[0])
+
+    @output
+    @render.download(filename=lambda: f"{input.marker_annotation()}_Wilcoxon_Top50_markers.csv")
+    def download_markers():
+        yield MARKER_TABLES[input.marker_annotation()].to_csv(index=False).encode("utf-8-sig")
 
     @reactive.calc
     def samples():
         frame = obs.iloc[filtered_indices()].copy()
-        return frame.groupby(["GSE", "GSM"], observed=True).agg(
-            tissue=("tissue", "first"), Disease=("Disease", "first"),
-            Disease1=("Disease1", "first"), age=("age", "first"),
-            gender=("gender", "first"), Cells=("GSM", "size"),
-        ).reset_index()
+        counts = frame.groupby(["GSE", "GSM"], observed=True).size().rename("Filtered_cells").reset_index()
+        return counts.merge(SAMPLE_METADATA,on=["GSE","GSM"],how="left",validate="one_to_one")
 
     @output
     @render.data_frame
@@ -609,6 +722,11 @@ def server(input, output, session):
     @output
     @render.download(filename="filtered_atlas_samples.csv")
     def download_samples(): yield samples().to_csv(index=False).encode("utf-8-sig")
+
+    @output
+    @render.download(filename="neuroCSF_PBMC_all_sample_metadata.csv")
+    def download_all_samples():
+        yield SAMPLE_METADATA.to_csv(index=False).encode("utf-8-sig")
 
 
 app = App(app_ui, server)
