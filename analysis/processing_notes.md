@@ -5,13 +5,13 @@ and PCA compositional outliers remain included.
 
 | Stage | Recorded operation | Source |
 | --- | --- | --- |
-| Early cell QC | At least 400 detected genes; mitochondrial fraction <20%; genes in at least 3 cells | `historical/01_early_QC_and_annotation.ipynb`, cell 9 |
-| Global reprocessing | 2,000 dataset-aware HVGs; PCA 60; sample-level Harmony; 30-neighbor graph using 30 PCs; Leiden 2.0 | `historical/02_global_reclustering.ipynb`, cells 13 and 15 |
-| Lineage review | B, T, NK and myeloid analyses; marker-based cluster review and exclusions | `historical/03`–`06` notebooks |
-| Annotation transfer | Transfer lineage labels by cell identifiers; exclude unresolved and manually reviewed non-target cells | `historical/07_annotation_transfer.ipynb` |
-| Raw counts reconstruction | Import 11 datasets; retain genes in at least 1 cell per dataset; inner concatenation gives 12,890 shared genes | `historical/08_shared_counts_and_cell_matching.ipynb` |
+| Early cell QC | At least 400 detected genes; mitochondrial fraction <20%; genes in at least 3 cells | Original `NEU_anno.ipynb`, cell 9 |
+| Global reprocessing | 2,000 dataset-aware HVGs; PCA 60; sample-level Harmony; 30-neighbor graph using 30 PCs; Leiden 2.0 | Original `NEU-0126-2.ipynb`, cells 13 and 15 |
+| Lineage review | B, T, NK and myeloid analyses; marker-based cluster review and exclusions | Original `NEU_B.ipynb`, `NEU_T.ipynb`, `NEU_NK.ipynb`, `NEU_Myeloid.ipynb` |
+| Annotation transfer | Transfer lineage labels by cell identifiers; exclude unresolved and manually reviewed non-target cells | Original `cell_type_integration.ipynb` |
+| Raw counts reconstruction | Import 11 datasets; retain genes in at least 1 cell per dataset; inner concatenation gives 12,890 shared genes | Original `adata_integration.ipynb` |
 | Cell matching | Within-sample correlation of 48 shared expression features; highest-correlation raw-cell match; retain highest-scoring match per raw ID | Same notebook; 7 duplicate mappings removed |
-| Label/logcounts records | Standardized subtype names and log-normalized expression layer | `historical/09_logcounts_and_label_names.ipynb` |
+| Label/logcounts records | Standardized subtype names and log-normalized expression layer | Original `rplot0618.ipynb` |
 | Sample filtering | Apply the recorded 8 non-CAR-T exclusions using the uniform-QC audit count, not the final annotated cell count | `config/sample_exclusions.csv`; original sample-filter source |
 | Final metadata | Curated Disease/Disease1, age, sex and tissue; retain sample IDs and old/raw cell identifiers | `data/sample_metadata.csv` and source metadata scripts |
 | Optional QC | Sample-wise Scrublet and tissue/disease-specific PCA sample flags | Steps 09 and 10 |
@@ -37,11 +37,9 @@ dataset-level Harmony (maximum 30 iterations), 30 neighbors using 30 PCs,
 cosine distance, Leiden 0.6 and UMAP min_dist 0.35/spread 1. It does not establish
 that the final atlas embeddings were recomputed with those parameters.
 
-The reorganized entry points isolate operations and expose input/output paths.
-They are reference implementations for reuse. The historical notebooks and
-original sources establish which operations were recorded in the release's
-actual processing history; the final objects preserve the retained annotation
-and embedding state.
+The numbered scripts isolate operations and expose input/output paths. Original
+source names and hashes are recorded in `source_inventory.json`. The final
+objects preserve the retained annotation and embedding state.
 
 ## Manuscript details to retain
 

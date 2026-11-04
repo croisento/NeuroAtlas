@@ -22,6 +22,8 @@ The root `requirements.txt` is for the Shiny application only.
 | 12 | `12_paired_CSF_PBMC.py` | Sample proportions and verified donor-pair table | Paired differences, tests and bootstrap intervals |
 | 13 | `13_export_tables.py` | Dataset, sample and marker records | CSV tables |
 | 14 | `14_export_website_data.py` | Final atlas and publication tables | Shiny metadata and compact marker-expression files |
+| 15 | `15_export_final_sample_QC_table.py` | Final counts and the clinical/QC workbook | Final-cell QC medians with GSM-linked clinical fields |
+| 16 | `16_export_participant_IDs.py` | Sample records, GEO titles and final QC table | Original/internal participant IDs and pairing records |
 
 The release was assembled through several analysis stages. Early annotation
 and lineage review preceded the reconstruction of the 12,890-gene raw-count
@@ -30,11 +32,10 @@ later metadata corrections and sample exclusions retained those coordinates.
 The numbered modules separate these operations for reuse; they are not a
 single command that reconstructs all historical manual selections.
 
-`historical/` contains the original notebooks with outputs removed. Code and
-execution counts are retained. `source_scripts/` contains the original Python
-sources, including their original paths, variable names and earlier figure
-numbers. These are source records, not the portable entry points.
-`source_inventory.json` records their code hashes and the dataset-reader origins.
+The numbered scripts contain their implementations directly.
+`source_inventory.json` records the original source names and hashes and the
+dataset-reader origins. Source references identify processing records; the
+original notebooks and unorganized scripts are not part of this code directory.
 
 `processing_notes.md` describes the count reconstruction, cell matching,
 sample-exclusion basis and differences between analysis branches.
@@ -126,6 +127,6 @@ Figure 5d is a pooled descriptive composition plot. It does not display
 disease-versus-control significance tests. The former lineage-restricted
 disease comparison is not included as a current manuscript figure.
 
-Run `python -m analysis.validate_analysis` to check code syntax, source hashes,
-PCA flags, paired statistics and the figure-panel index. Expensive upstream
-analyses are not rerun by this validation command.
+Steps 15 and 16 export the final QC and participant tables. They require the
+author-supplied clinical workbook and sample-title records in addition to the
+released object; pass their paths explicitly as shown by each script's `--help`.

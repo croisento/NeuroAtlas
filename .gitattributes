@@ -1,2 +1,0 @@
-# Preserve historical source formatting and byte-for-byte source hashes.
-analysis/source_scripts/** -whitespace

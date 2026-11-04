@@ -49,47 +49,47 @@ Myeloid,pca_seed,97,historical notebooks; see processing_notes.md
 Myeloid,graph_seed,package default (argument omitted),historical notebooks; see processing_notes.md
 Myeloid,harmony_seed,97,historical notebooks; see processing_notes.md
 Myeloid,pca_solver,package default (argument omitted),historical notebooks; see processing_notes.md
-july_remerge,hvg,3000,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,pca,50,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,harmony,dataset,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,neighbors,30,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,pcs,30,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,resolution,0.6,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,pca_seed,0,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,graph_seed,0,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,harmony_seed,package default (argument omitted),source_scripts/02_preprocessing_Harmony_integration_clustering.py
-july_remerge,pca_solver,arpack,source_scripts/02_preprocessing_Harmony_integration_clustering.py
-raw_counts,genes_min_cells,1,historical/08_shared_counts_and_cell_matching.ipynb
-early_QC,min_detected_genes,400,historical/01_early_QC_and_annotation.ipynb cell 9
+july_remerge,hvg,3000,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,pca,50,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,harmony,dataset,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,neighbors,30,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,pcs,30,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,resolution,0.6,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,pca_seed,0,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,graph_seed,0,original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,harmony_seed,package default (argument omitted),original source: 02_preprocessing_Harmony_integration_clustering.py
+july_remerge,pca_solver,arpack,original source: 02_preprocessing_Harmony_integration_clustering.py
+raw_counts,genes_min_cells,1,original notebook: 08_shared_counts_and_cell_matching.ipynb
+early_QC,min_detected_genes,400,original notebook: 01_early_QC_and_annotation.ipynb cell 9
 early_QC,mitochondrial_percent,<20,same
 early_QC,genes_min_cells,3,same
-normalization,target_sum,10000,source_scripts/02_preprocessing_Harmony_integration_clustering.py
+normalization,target_sum,10000,original source: 02_preprocessing_Harmony_integration_clustering.py
 normalization,transform,log1p,same
 sample_filter,min_cells,400,config/sample_exclusions.csv; based on uniform-QC audit
 sample_filter,exception,GSE186802,same
-Scrublet,expected_doublet_rate,0.05,source_scripts/49_identify_doublets_final_atlas_no_removal.py
+Scrublet,expected_doublet_rate,0.05,original source: 49_identify_doublets_final_atlas_no_removal.py
 Scrublet,stdev_doublet_rate,0.02,same
 Scrublet,sim_doublet_ratio,2,same
 Scrublet,PCs,30; retry 20 then 10 for rank errors,same
 Scrublet,threshold,automatic,same
 Scrublet,random_state,0,same
 Scrublet,remove_cells,False,same
-PCA_sample_flags,min_samples_per_tissue_disease,5,source_scripts/05_Figure3_SupplementaryFigure1C_SupplementaryFigure2_SupplementaryFigure3_CSF_composition_analysis.py
+PCA_sample_flags,min_samples_per_tissue_disease,5,original source: 05_Figure3_SupplementaryFigure1C_SupplementaryFigure2_SupplementaryFigure3_CSF_composition_analysis.py
 PCA_sample_flags,standardization,StandardScaler per tissue-disease group,same
 PCA_sample_flags,PCs,2,same
 PCA_sample_flags,distance_z_threshold,>1.5; ddof=0,same
-markers,test,two-sided Wilcoxon rank-sum; tie correction,source_scripts/67_marker_top50_Wilcoxon_filtered.py
+markers,test,two-sided Wilcoxon rank-sum; tie correction,original source: 67_marker_top50_Wilcoxon_filtered.py
 markers,min_detection_fraction,0.25,same
 markers,min_estimated_log2_fold_change,0.25,same
 markers,BH_adjusted_P,<0.05; all 12890 genes per comparison,same
 markers,ranking,positive statistic; decreasing z; up to 50,same
-paired,test,two-sided Wilcoxon signed-rank; zero_method=wilcox; correction=True; method=auto,source_scripts/61_paired_CSF_PBMC_composition_analysis.py
+paired,test,two-sided Wilcoxon signed-rank; zero_method=wilcox; correction=True; method=auto,original source: 61_paired_CSF_PBMC_composition_analysis.py
 paired,BH_scope,25 subtypes,same
-paired,n_pairs,40,source_scripts/65_paired_CSF_PBMC_40pairs_exclude_duplicate.py
+paired,n_pairs,40,original source: 65_paired_CSF_PBMC_40pairs_exclude_duplicate.py
 paired,excluded_duplicate,GSM5264668,same
-paired,bootstrap_resamples,5000,source_scripts/61_paired_CSF_PBMC_composition_analysis.py
+paired,bootstrap_resamples,5000,original source: 61_paired_CSF_PBMC_composition_analysis.py
 paired,bootstrap_seed,0,same
 paired,CI,percentiles 2.5 and 97.5 of paired-donor median differences,same
-july_remerge,max_iter_harmony,30,source_scripts/02_preprocessing_Harmony_integration_clustering.py
+july_remerge,max_iter_harmony,30,original source: 02_preprocessing_Harmony_integration_clustering.py
 july_remerge,scale_max_value,10,same
 early_and_lineages,scale_max_value,not supplied,historical notebooks
