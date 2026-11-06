@@ -1,35 +1,26 @@
-"""Figure 3a–f: global and lineage UMAPs and canonical marker dot plot."""
+"""Manuscript Figure 3a–f, using original 04 functions and saved embeddings."""
+from pathlib import Path
 import h5py
-import numpy as np
 import anndata as ad
-import scanpy as sc
-from analysis.common import arguments,obs_umap,save_figure,setup_style
-from analysis.figures.helpers import discrete_figure,COLORS,ORDER,STYLE
+from figures.common import arguments, metadata_object, categorical_umap, style
+from figures.annotation_plotting import (
+    SOFT_COLOR_MAP, CELL_TYPE_ORDER, MARKER_DICT, DOTPLOT_CELL_TYPE_ORDER,
+    DOTPLOT_EXCLUDE_CELLTYPES, plot_lineage_umap, plot_marker_gene_dotplot,
+)
 from analysis.expression import selected_logcounts
 
 
 def main():
-    p=arguments(__doc__);p.add_argument('--h5ad-dir',help='Directory containing the four lineage objects')
-    a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True);setup_style()
-    obs,xy=obs_umap(a.input)
-    discrete_figure(xy,obs.cell_subtype_short,COLORS,'Cell subtype',a.output/'Figure3a_global_subtypes',True)
-    directory=a.input.parent if a.h5ad_dir is None else __import__('pathlib').Path(a.h5ad_dir)
-    for letter,lineage,title in [('b','T','T cells'),('c','B','B cells'),('d','ILCS','NK/ILCs'),('e','Myeloid','Myeloid/DCs')]:
-        path=directory/f'adata_final_{lineage}_Disease_corrected_min400_except_CART.h5ad'
-        with h5py.File(path,'r') as f:
-            from anndata.io import read_elem
-            local=read_elem(f['obs'])
-            basis='X_umap_logcounts_harmony' if lineage!='T' and 'X_umap_logcounts_harmony' in f['obsm'] else 'X_umap'
-            coords=f['obsm'][basis][:]
-        discrete_figure(coords,local.cell_subtype_short,COLORS,title,a.output/f'Figure3{letter}_{lineage}_subtypes',True)
-    markers=STYLE['canonical_markers']
-    requested=list(dict.fromkeys(g for group in markers.values() for g in group))
-    matrix,obs,var=selected_logcounts(a.input,requested)
-    x=ad.AnnData(X=matrix,obs=obs,var=var)
-    markers={k:[g for g in v if g in x.var_names] for k,v in markers.items()}
-    plot=sc.pl.dotplot(x,markers,groupby='cell_subtype_short',categories_order=[v for v in ORDER if v in obs.cell_subtype_short.unique()],
-                       use_raw=False,standard_scale='var',show=False,return_fig=True)
-    plot.make_figure();save_figure(plot.fig,a.output/'Figure3f_canonical_marker_dotplot')
+    from figures.final_publication_figures import setup
+    from figures.final_figure3 import render
+    p = arguments(__doc__)
+    p.add_argument('--h5ad-dir', type=Path)
+    a = p.parse_args()
+    a.output.mkdir(parents=True, exist_ok=True)
+    setup()
+    render(a.input, a.h5ad_dir or a.input.parent, a.output)
 
 
-if __name__=='__main__':main()
+
+if __name__ == '__main__':
+    main()

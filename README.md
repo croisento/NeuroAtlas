@@ -1,8 +1,10 @@
-# neuroCSF-PBMC
+# NeuroAtlas
+
+A single-cell atlas of cerebrospinal fluid and peripheral blood in neurotoxicity.
 
 ## Database information
 
-neuroCSF-PBMC contains 573,569 cells from 11 public GEO datasets, including
+NeuroAtlas contains 573,569 cells from 11 public GEO datasets, including
 161 CSF samples and 40 donor-matched CSF–PBMC pairs. The atlas covers
 inflammatory, neurodegenerative, infectious and treatment-associated conditions.
 Healthy or cognitively normal controls are classified as Younger control
@@ -46,7 +48,6 @@ distinguish flagged, not flagged and not assessed samples.
 | `requirements.txt` | Python package dependencies |
 | `analysis/` | Dataset import, QC, integration, annotation, statistics and figure code |
 | `analysis/README.md` | Processing order, inputs, outputs and analysis commands |
-| `analysis/parameters.csv` | Recorded parameters and source locations |
 | `analysis/figure_panel_map.csv` | Manuscript panels and their generating scripts |
 | `analysis/requirements.txt` | Analysis package versions, separate from the website environment |
 

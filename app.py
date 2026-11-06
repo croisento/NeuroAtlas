@@ -241,8 +241,8 @@ app_ui = ui.page_fillable(
     ui.include_css(ROOT / "www/style.css"),
     ui.tags.header(
         ui.tags.div(
-            ui.tags.h1("neuroCSF-PBMC"),
-            ui.tags.p("A neurotoxicity atlas of cerebrospinal fluid and peripheral blood mononuclear cells in human diseases"),
+            ui.tags.h1("NeuroAtlas"),
+            ui.tags.p("A single-cell atlas of cerebrospinal fluid and peripheral blood in neurotoxicity"),
             class_="brand",
         ),
         ui.tags.div(ui.tags.span("573,569 cells · 161 CSF samples · 40 donor-matched pairs", class_="status-label"), class_="header-status"),
@@ -419,7 +419,7 @@ app_ui = ui.page_fillable(
             ui.nav_panel(
                 "About",
                 ui.card(
-                    ui.tags.h2("About neuroCSF-PBMC"),
+                    ui.tags.h2("About NeuroAtlas"),
                     ui.tags.p("11 public GEO datasets; 161 CSF samples and 40 donor-matched CSF–PBMC pairs. Healthy or cognitively normal controls are separated into Younger control (<60 years) and Older control (≥60 years). IIH retains its clinical label. Controls without CNS inflammation (unspecific) remain distinct from healthy controls."),
                     ui.tags.p("This read-only application displays existing annotations and UMAP coordinates. It does not recompute PCA, Harmony, clustering, or UMAP."),
                     ui.tags.dl(
@@ -441,7 +441,7 @@ app_ui = ui.page_fillable(
             ),
         ),
     ),
-    title="neuroCSF-PBMC",
+    title="NeuroAtlas",
 )
 
 
