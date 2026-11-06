@@ -1,61 +1,85 @@
-# NeuroAtlas
+# CSF–PBMC analysis code
 
-A single-cell atlas of cerebrospinal fluid and peripheral blood in neurotoxicity.
+All files listed below are in [`analysis/`](analysis/). Run the commands from that directory.
 
-## Database information
+```bash
+cd analysis
+```
 
-NeuroAtlas contains 573,569 cells from 11 public GEO datasets, including
-161 CSF samples and 40 donor-matched CSF–PBMC pairs. The atlas covers
-inflammatory, neurodegenerative, infectious and treatment-associated conditions.
-Healthy or cognitively normal controls are classified as Younger control
-(<60 years) or Older control (≥60 years).
+## Files
 
-Cells are annotated into 5 major cell types and 25 subtypes. T cells, B cells,
-NK/ILCs and myeloid/DC populations form four display groups; pDCs retain a
-separate major cell-type label. Sample records include GEO identifiers, tissue,
-disease, age, sex, clinical manifestations and donor-pairing information.
+| Order | File | Content |
+|---|---|---|
+| 00 | `00_dataset_import/GSE*.py` | Separate raw-count importer for each of 11 GEO series |
+| 01 | `01_load_merge_and_plot_gene_intersections.py` | Retain genes detected in at least three cells per dataset; merge shared genes and plot intersections |
+| 02 | `02_preprocessing_Harmony_integration_clustering.py` | Global normalization, HVG selection, PCA, Harmony, Leiden and UMAP |
+| 02.1 | `02.1_QC_and_contaminant_screening.py` | Cell/gene/sample QC, preliminary clustering and marker-expression inspection |
+| 03 | `03_lineage_specific_Harmony_reclustering_and_UMAP.py` | Lineage reclustering of an already annotated parent object |
+| 05 | `05_optional_quality_control_flags.py` | Per-sample Scrublet doublet scores/labels and sample-composition PCA flags; no deletion |
 
-The website provides UMAP visualization, marker expression, cell-composition
-plots, violin and box plots, marker tables and sample metadata downloads.
-Expression browsing covers 668 genes from the top-50 marker lists for major
-cell types and subtypes. The full atlas contains 12,890 shared genes.
+`00_dataset_import/_shared.py` contains importer helpers. `analysis/` contains
+the helpers required by 02.1 and selected-expression access for figures. The combined 00 script and earlier alternative
+integration/annotation entry points are not included.
 
-Paired comparisons use 40 donor-matched pairs and two-sided Wilcoxon
-signed-rank tests, with Benjamini–Hochberg correction across 25 subtypes.
-GSM5264668 is retained in the atlas but excluded from paired comparisons as
-a duplicate PBMC record; GSM5264669 is used for that donor.
+## Inputs and use
 
-Predicted doublets (6,157 cells) and PCA compositional outliers (13 samples)
-are retained and available for optional filtering. PCA assessment records
-distinguish flagged, not flagged and not assessed samples.
+Install packages from `requirements.txt`. Run dataset importers separately:
 
-## Data format
+```bash
+python 00_dataset_import/GSE163005.py --base-dir /path/to/raw_data
+```
 
-| File | Contents |
-| --- | --- |
-| `data/atlas_metadata.npz` | UMAP coordinates, categorical annotation codes, age, QC metrics and doublet scores |
-| `data/metadata_categories.json` | Labels for categorical annotation codes |
-| `data/expression_part_*.npz` | Sparse CSC matrices of marker-gene expression |
-| `data/manifest.json` | Gene locations, expression scale and dataset dimensions |
-| `data/cell_type_top50_marker_catalog.csv` | Top-50 markers for each major cell type |
-| `data/cell_subtype_short_top50_marker_catalog.csv` | Top-50 markers for each cell subtype |
-| `data/sample_metadata.csv` | Sample annotations, clinical manifestations, pairing and PCA flags |
-| `data/donor_matched_pairs.csv` | Sample identifiers for the 40 analysis pairs |
-| `data/paired_proportions.csv` | Per-sample subtype proportions and within-donor differences |
-| `data/paired_statistics.csv` | Paired test results, adjusted P values and effect-size confidence intervals |
-| `app.py` | Shiny for Python application |
-| `www/style.css` | Website styles |
-| `requirements.txt` | Python package dependencies |
-| `analysis/` | Dataset import, QC, integration, annotation, statistics and figure code |
-| `analysis/README.md` | Processing order, inputs, outputs and analysis commands |
-| `analysis/figure_panel_map.csv` | Manuscript panels and their generating scripts |
-| `analysis/requirements.txt` | Analysis package versions, separate from the website environment |
+GSE163005 reads GEO MTX/TSV and retains only matrix barcodes present in the
+patient annotation CSV. GSE138266 exports raw counts without its former
+dataset-specific cell filtering. Existing importer output files are protected
+against overwriting.
 
-Expression matrices store log1p-normalized counts per 10,000, multiplied by
-1,000 and rounded to integers. Divide stored values by the expression scale
-in `manifest.json` to recover expression values for display.
+01, 02 and 03 retain the original section-based script style. Set their input,
+output and working-directory paths near the top before running. 02 and 03 are
+unchanged copies of the original July scripts. 01 differs only in the requested
+min_cells=3 threshold and use of unfiltered GSE138266 raw counts.
 
-Marker tables report one-versus-rest, tie-corrected Wilcoxon rank-sum tests.
-Markers have an expression fraction ≥25% in either group, estimated log₂ fold
-change ≥0.25 and BH-adjusted P <0.05. Up to 50 positive markers per group are
-ranked by test statistic.
+```bash
+python 02.1_QC_and_contaminant_screening.py \
+  --input /path/to/raw_counts.h5ad --output /path/to/new_QC_output
+```
+
+02.1 retains cells with >=400 detected genes and mitochondrial counts <20%,
+then genes detected in >=3 retained cells. It requires >=400 cells per sample,
+except GSE186802. Per-dataset clustering and marker dotplots follow. It does
+not classify or remove contaminant clusters. The decimal number is a file
+label: this script reads raw counts (preferentially `layers['counts']`), not a
+Harmony embedding, and can be run on the merged raw-count object from 01.
+
+02 calculates QC metrics but does not filter cells. 03 requires existing
+`cell_type`, `cell_subtype_short` and log-normalized expression; it does not
+generate manual annotations. These files are not a complete reconstruction of
+the historical annotation steps between global clustering and `adata_final`.
+
+## Optional QC flags
+
+```bash
+python 05_optional_quality_control_flags.py \
+  --input /path/to/annotated_atlas.h5ad --output /path/to/new_optional_QC_output
+```
+
+05 is copied unchanged from the combined Scrublet/PCA module. It saves a
+doublet-annotated h5ad and `PCA_compositional_outlier_flags.csv`. Cells, samples
+and existing UMAP coordinates are retained. The supplied
+`analysis/data/sample_subtype_proportions.csv` and `data/sample_metadata.csv`
+are the default inputs for the current atlas; use `--proportions` and
+`--metadata` for another input cohort. Sample keys must match the input h5ad.
+
+This folder contains the confirmed processing files, optional QC flags and
+manuscript plotting entries in `figures/`. See [figures/README.md](analysis/figures/README.md)
+for panel mappings, original sources, input requirements and commands.
+
+```bash
+python run_manuscript_figures.py --input /path/to/final_atlas.h5ad --h5ad-dir /path/to/lineage_objects
+```
+
+Figure outputs are written to `Outputs/Figure2/`, `Outputs/Figure3/`,
+`Outputs/Figure4/`, `Outputs/Figure5/` and `Outputs/FigureS1/`. Existing
+same-name figures are overwritten. Figure 2 includes both the assembled page
+and separate a–d panels using the same rendering. Outputs are generated locally
+and excluded from Git; the repository contains code and supporting metadata.
