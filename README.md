@@ -29,7 +29,7 @@ Predicted doublets (6,157 cells) and PCA compositional outliers (13 samples)
 are retained and available for optional filtering. PCA assessment records
 distinguish flagged, not flagged and not assessed samples.
 
-The [`analysis/`](analysis/) directory contains the data-processing and manuscript figure code.
+**The [`analysis/`](analysis/) directory contains the data-processing and manuscript figure code.**
 
 ## Data format
 
