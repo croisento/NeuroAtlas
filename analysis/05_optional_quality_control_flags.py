@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Optional QC flags: per-sample Scrublet and sample-composition PCA; no deletion."""
+# =============================================================================
+# Optional QC flags: per-sample Scrublet and sample-composition PCA; no deletion.
+# =============================================================================
 import os
 for name in ["OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS"]:
     os.environ[name] = "2"
