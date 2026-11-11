@@ -1,7 +1,6 @@
-"""Cell QC, per-dataset preliminary clustering and marker-expression inspection.
-
-No contaminant classification or cluster deletion is performed.
-"""
+# =============================================================================
+# Cell QC, per-dataset preliminary clustering and marker-expression inspection.
+# =============================================================================
 from pathlib import Path
 import argparse
 import anndata as ad
